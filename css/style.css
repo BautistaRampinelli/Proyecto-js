@@ -1,0 +1,14 @@
+body {
+    background-color:navajowhite;
+}
+
+.card {
+    background-color: aquamarine;
+    padding: 1%;
+    margin: 5% 40% 5% 40%;
+    border: solid 3px black;
+    align-items: center;
+}
+p {
+    text-align: center;
+}

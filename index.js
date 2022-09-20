@@ -1,5 +1,6 @@
 class Producto {
-    constructor(nombre, cat, precioVenta, precioCompra, cantidad,) {
+    constructor(id, nombre, cat, precioVenta, precioCompra, cantidad,) {
+        this.id = id
         this.nombre = nombre.toUpperCase();
         this.cat = cat
         this.precioVenta = precioVenta;
@@ -12,21 +13,22 @@ class Producto {
 // Cargar productos
 let productos = []
 
-let producto1 = new Producto("TV", "electrodoméstico", 600, 400, 5)
-let producto2 = new Producto("Taladro", "herramienta", 200, 140, 12)
-let producto3 = new Producto("Celular", "electrodoméstico", 500, 300, 7)
+let producto1 = new Producto(1, "TV", "electrodoméstico", 600, 400, 5)
+let producto2 = new Producto(2, "Taladro", "herramienta", 200, 140, 12)
+let producto3 = new Producto(3, "Celular", "electrodoméstico", 500, 300, 7)
 
 productos.push(producto1,producto2,producto3)
 
 function agregarProductos(){
     let numeroProductos = parseInt(prompt("Número de productos a ingresar"))
     for(let index = 0; index < numeroProductos; index++){
+        let id = prompt("Ingrese el id del producto")
         let nombre = prompt("ingrese el nombre del producto")
         let cat = prompt("Ingrese la categoría del producto")
         let precioVenta = parseFloat(prompt("Ingrese el precio de venta del producto"))
         let precioCompra = parseFloat(prompt("Ingrese el precio de compra del producto"))
         let cantidad = parseFloat(prompt("Ingrese la cantidad de productos"))
-        let productoRegistrado = new Producto(nombre, cat, precioVenta, precioCompra, cantidad)
+        let productoRegistrado = new Producto(id, nombre, cat, precioVenta, precioCompra, cantidad)
         productos.push(productoRegistrado)
     }
     return productos
@@ -115,9 +117,33 @@ function procesarInventario () {
         }
 }    
 
+
+// Crear tarjetas
+const contenedorProductos = document.getElementById("contenedor-productos");
+
+function pintarProductos () {
+    for (const producto of productos) {
+        let column = document.createElement("div");
+        column.id = `columna-${producto.id}`;
+        column.innerHTML = `
+            <div class="card">
+                <div class="card-body">
+                <p class="card-text">Nombre: <b>${producto.nombre}</b></p>
+                <p class="card-text">Categoría: <b>${producto.cat}</b></p>
+                <p class="card-text">Precio compra: <b>$${producto.precioCompra}</b></p>
+                <p class="card-text">Precio venta: <b>$${producto.precioVenta}</b></p>
+                <p class="card-text">Cantidad: <b>${producto.cantidad}</b></p>
+                </div>
+            </div>`;
+        contenedorProductos.append(column);
+    }
+}
+
+
 // Funcion directora
 function main() {
     procesarInventario();
+    pintarProductos();
 }
 
 main();
