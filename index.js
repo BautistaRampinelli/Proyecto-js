@@ -8,6 +8,7 @@ let inputPrecioVenta = document.getElementById("inputPrecioVenta");
 let inputCantidad = document.getElementById("inputCantidad");
 const contenedorProductos = document.getElementById("contenedor-productos");
 let productosJSON
+let limpiarLS = document.getElementById("limpiarLS");
 
 class Producto {
     constructor(id, nombre, proveedor, precioVenta, precioCompra, cantidad,) {
@@ -23,6 +24,7 @@ class Producto {
 
 function inicializarEventos() {
     form.onsubmit = (event) => validarFormulario(event);
+    limpiarLS.onclick = borrarLS;
 }
 
 
@@ -36,7 +38,7 @@ function validarFormulario(event) {
     let cantidad = parseInt(inputCantidad.value);
     const idExiste = productos.some((producto) => producto.id === id);
     if (!idExiste) {
-        let producto = new Producto( id, nombre, proveedor, precioCompra, precioVenta, cantidad);
+        let producto = new Producto( id, nombre, proveedor, precioVenta, precioCompra, cantidad);
         productos.push(producto);
         form.reset();
         guardarProductosLS()
@@ -56,15 +58,30 @@ function pintarProductos () {
         column.innerHTML = `
             <div class="card">
                 <div class="card-body">
-                <p class="card-text">Nombre: <b>${producto.nombre}</b></p>
-                <p class="card-text">Proveedor: <b>${producto.proveedor}</b></p>
-                <p class="card-text">Precio compra: <b>$${producto.precioCompra}</b></p>
-                <p class="card-text">Precio venta: <b>$${producto.precioVenta}</b></p>
-                <p class="card-text">Cantidad: <b>${producto.cantidad}</b></p>
-                </div>
+                    <p class="card-text">Nombre: <b>${producto.nombre}</b></p>
+                    <p class="card-text">Proveedor: <b>${producto.proveedor}</b></p>
+                    <p class="card-text">Precio compra: <b>$${producto.precioCompra}</b></p>
+                    <p class="card-text">Precio venta: <b>$${producto.precioVenta}</b></p>
+                    <p class="card-text">Cantidad: <b>${producto.cantidad}</b></p>
+                    <div class="card-footer">
+                        <button id="botonEliminar-${producto.id}" >Eliminar</button>
+                    </div>
+                    </div>
             </div>`;
         contenedorProductos.append(column);
+        let botonEliminar = document.getElementById(`botonEliminar-${producto.id}`);
+        botonEliminar.onclick = () => eliminarProducto(producto.id);
     }
+}
+
+function eliminarProducto(idProducto) {
+    let columnaBorrar = document.getElementById(`columna-${idProducto}`);
+    let indiceBorrar = productos.findIndex(
+        (producto) => Number(producto.id) === Number(idProducto)
+    );
+    productos.splice(indiceBorrar, 1);
+    columnaBorrar.remove();
+    actualizarProductosLS();
 }
 
 // Local storage
@@ -80,6 +97,18 @@ function obtenerProductosLS() {
         productos = JSON.parse(productosJSON);
         pintarProductos();
     }
+}
+
+function actualizarProductosLS() {
+    let productosJSON = JSON.stringify(productos);
+    localStorage.setItem("productos", productosJSON);
+}
+
+function borrarLS() {
+    localStorage.clear();
+    usuario = "";
+    productos = [];
+    pintarProductos();
 }
 
 // Funcion directora

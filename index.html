@@ -11,21 +11,24 @@
     <main>
         <form class="form" id="form">
             <h2 class="tituloForm"> Complete los siguientes datos para cargar un producto.</h2>
-            <label class="id" for="id">ID:</label> 
+            <label class="id" for="inputId">ID:</label> 
             <input class="inputId" type="number" name="id" id="inputId"><br>
-            <label class="nombre" for="nombre">Nombre:</label>	
+            <label class="nombre" for="inputNombre">Nombre:</label>	
             <input class="inputNombre" type="text" name="nombre" id="inputNombre"/><br>
-            <label class="proveedor" for="proveedor">Proveedor:</label>
+            <label class="proveedor" for="inputProveedor">Proveedor:</label>
             <input class="inputProveedor" type="text" name="proveedor" id="inputProveedor"><br>
-            <label class="precioCompra" for="precioCompra">Precio compra:</label> 
+            <label class="precioCompra" for="inputPrecioCompra">Precio compra:</label> 
             <input class="inputPrecioCompra" type="number" name="precioCompra" id="inputPrecioCompra"><br>
-            <label class="precioVenta" for="precioVenta">Precio venta:</label> 
+            <label class="precioVenta" for="inputPrecioVenta">Precio venta:</label> 
             <input class="inputPrecioVenta" type="number" name="precioVenta" id="inputPrecioVenta"><br>
-            <label class="cantidad" for="cantidad">Cantidad:</label> 
+            <label class="cantidad" for="inputCantidad">Cantidad:</label> 
             <input class="inputCantidad" type="number" name="cantidad" id="inputCantidad"><br>
             <input class="enviar" type="submit" value="Cargar producto."/><br>
             <input class="reset" type="reset" value="Resetear formulario."/><br>
         </form>
+        <div>
+            <button id="limpiarLS">Borrar inventario</button>
+        </div>
         <div id="contenedor-productos"></div>
     </main>
     <script src="index.js"></script>
