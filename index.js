@@ -24,10 +24,8 @@ class Producto {
 
 function inicializarEventos() {
     form.onsubmit = (event) => validarFormulario(event);
-    limpiarLS.onclick = borrarLS;
+    limpiarLS.onclick = mostrarSwalBorrarLS
 }
-
-
 function validarFormulario(event) {
     event.preventDefault()
     let id = parseFloat(inputId.value);
@@ -38,15 +36,25 @@ function validarFormulario(event) {
     let cantidad = parseInt(inputCantidad.value);
     const idExiste = productos.some((producto) => producto.id === id);
     if (!idExiste) {
+        //mostrarSwalProductoAgregado
         let producto = new Producto( id, nombre, proveedor, precioVenta, precioCompra, cantidad);
         productos.push(producto);
         form.reset();
-        guardarProductosLS()
+        guardarProductosLS();
         pintarProductos();
+        
     } else {
         alert("El id ya existe");
     }
 }
+
+// function mostrarSwalProductoAgregado() {
+//     Swal.fire(
+//         'The Internet?',
+//         'That thing is still around?',
+//         'question'
+//     )
+// }
 
 // Crear tarjetas
 
@@ -70,7 +78,23 @@ function pintarProductos () {
             </div>`;
         contenedorProductos.append(column);
         let botonEliminar = document.getElementById(`botonEliminar-${producto.id}`);
-        botonEliminar.onclick = () => eliminarProducto(producto.id);
+        botonEliminar.onclick = mostrarSwalEliminarProducto;
+        function mostrarSwalEliminarProducto() {
+            Swal.fire({
+                title: 'Estas seguro de eliminar este producto?',
+                showDenyButton: true,
+                showCancelButton: false,
+                confirmButtonText: 'Eliminar.',
+                denyButtonText: `Cancelar.`,
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    eliminarProducto(producto.id)
+                    Swal.fire('Producto eliminado.')
+                } else if (result.isDenied) {
+                    Swal.fire('Cancelado.')
+                }
+            })
+        }
     }
 }
 
@@ -111,6 +135,28 @@ function borrarLS() {
     pintarProductos();
 }
 
+// Sweet alert
+
+
+function mostrarSwalBorrarLS() {
+    Swal.fire({
+        title: 'Estas seguro de eliminar todo el inventario?',
+        showDenyButton: true,
+        showCancelButton: false,
+        confirmButtonText: 'Eliminar.',
+        denyButtonText: `Cancelar.`,
+        }).then((result) => {
+        if (result.isConfirmed) {
+            borrarLS();
+            Swal.fire('Inventario eliminado.');
+        } else if (result.isDenied) {
+            Swal.fire('Cancelado.')
+        }
+    })
+}
+
+
+
 // Funcion directora
 function main() {
     inicializarEventos();
@@ -120,6 +166,3 @@ function main() {
 }
 
 main();
-
-
-
