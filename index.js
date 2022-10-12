@@ -35,26 +35,25 @@ function validarFormulario(event) {
     let precioVenta = parseFloat(inputPrecioVenta.value);
     let cantidad = parseInt(inputCantidad.value);
     const idExiste = productos.some((producto) => producto.id === id);
-    if (!idExiste) {
-        //mostrarSwalProductoAgregado
+    if (!idExiste) {      
         let producto = new Producto( id, nombre, proveedor, precioVenta, precioCompra, cantidad);
         productos.push(producto);
         form.reset();
         guardarProductosLS();
         pintarProductos();
-        
+        mostrarSwalProductoAgregado();
+        function mostrarSwalProductoAgregado() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Éxito',
+                text: `El producto ${producto.nombre} se cargo exitosamente.`,
+            })
+        }  
     } else {
         alert("El id ya existe");
     }
 }
 
-// function mostrarSwalProductoAgregado() {
-//     Swal.fire(
-//         'The Internet?',
-//         'That thing is still around?',
-//         'question'
-//     )
-// }
 
 // Crear tarjetas
 
@@ -115,13 +114,6 @@ function guardarProductosLS() {
     localStorage.setItem("productos", productosJSON);
 }
 
-function obtenerProductosLS() {
-    let productosJSON = localStorage.getItem("productos");
-    if(productosJSON) {
-        productos = JSON.parse(productosJSON);
-        pintarProductos();
-    }
-}
 
 function actualizarProductosLS() {
     let productosJSON = JSON.stringify(productos);
@@ -155,14 +147,24 @@ function mostrarSwalBorrarLS() {
     })
 }
 
+// Consultar productos al servidor
+
+function consultarProductosServidor() {
+    fetch("https://6347166fdb76843976a60187.mockapi.io/Productos")
+    .then((response) => response.json())
+    .then((data) => {
+        productos = [...data];
+        pintarProductos();
+    })
+    .catch((error) => error);
+}
 
 
 // Funcion directora
 function main() {
     inicializarEventos();
-    obtenerProductosLS();
+    consultarProductosServidor()
     validarFormulario();
-
 }
 
 main();
