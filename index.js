@@ -7,7 +7,7 @@ let inputPrecioCompra = document.getElementById("inputPrecioCompra");
 let inputPrecioVenta = document.getElementById("inputPrecioVenta");
 let inputCantidad = document.getElementById("inputCantidad");
 const contenedorProductos = document.getElementById("contenedor-productos");
-let productosJSON
+let productosJSON;
 let limpiarLS = document.getElementById("limpiarLS");
 
 class Producto {
@@ -22,9 +22,14 @@ class Producto {
     calcularCosto = () => this.cantidad * this.precioCompra;
 }
 
+
+// Calcular costo
+
+
+
 function inicializarEventos() {
     form.onsubmit = (event) => validarFormulario(event);
-    limpiarLS.onclick = mostrarSwalBorrarLS
+    limpiarLS.onclick = mostrarSwalBorrarLS;
 }
 function validarFormulario(event) {
     event.preventDefault()
@@ -34,7 +39,7 @@ function validarFormulario(event) {
     let precioCompra = parseFloat(inputPrecioCompra.value);
     let precioVenta = parseFloat(inputPrecioVenta.value);
     let cantidad = parseInt(inputCantidad.value);
-    const idExiste = productos.some((producto) => producto.id === id);
+    const idExiste = productos.some((producto) => producto.id == id);
     if (!idExiste) {      
         let producto = new Producto( id, nombre, proveedor, precioVenta, precioCompra, cantidad);
         productos.push(producto);
@@ -50,7 +55,7 @@ function validarFormulario(event) {
             })
         }  
     } else {
-        alert("El id ya existe");
+        mostrarSwalIdExistente();
     }
 }
 
@@ -122,13 +127,27 @@ function actualizarProductosLS() {
 
 function borrarLS() {
     localStorage.clear();
-    usuario = "";
     productos = [];
     pintarProductos();
 }
 
+function obtenerProductosLS() {
+    let productosJSON = localStorage.getItem("productos");
+    if(productosJSON) {
+        productos = JSON.parse(productosJSON);
+        pintarProductos();
+    }
+}
+
 // Sweet alert
 
+function mostrarSwalIdExistente() {
+    Swal.fire({
+        icon: 'error',
+        title: 'Atención',
+        text: `El ID seleccionado ya existe.`,
+    })
+}
 
 function mostrarSwalBorrarLS() {
     Swal.fire({
@@ -153,18 +172,22 @@ function consultarProductosServidor() {
     fetch("https://6347166fdb76843976a60187.mockapi.io/Productos")
     .then((response) => response.json())
     .then((data) => {
-        productos = [...data];
+        productos = [...data, ...productos];
+        let set = new Set( productos.map( JSON.stringify ) );
+        productos = Array.from( set ).map( JSON.parse );
+        console.log(productos)
         pintarProductos();
     })
-    .catch((error) => error);
+    .catch((error) => console.log(error));
 }
+
 
 
 // Funcion directora
 function main() {
     inicializarEventos();
-    consultarProductosServidor()
-    validarFormulario();
+    obtenerProductosLS();
+    consultarProductosServidor();
 }
 
 main();
